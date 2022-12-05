@@ -4,7 +4,7 @@ import { ErrorHandlingService } from 'src/app/Services/error-handling/error-hand
 import { HttpService } from 'src/app/Services/http/http.service';
 import { NotifyService } from 'src/app/Services/Notification/notify.service';
 import { UserService } from 'src/app/Services/users/user.service';
-
+import { DomSanitizer } from '@angular/platform-browser';
 @Component({
   selector: 'app-bill',
   templateUrl: './bill.component.html',
@@ -25,6 +25,11 @@ export class BillComponent implements OnInit {
   Mor_TotalMilk: any;
   Mor_TotalT_Rate: any;
   Eve_TotalT_Rate: any;
+  bln_billExist: any;
+  toolbar: any;
+  str_path: any;
+  pdfSrc: any;
+  Url: any;
   get int_advance() {
     return this.frm_bill.get('int_advance');
   }
@@ -42,6 +47,7 @@ export class BillComponent implements OnInit {
   }
   constructor(private user: UserService,
     private http: HttpService,
+    private sanitizer: DomSanitizer,
     private errorHandeling: ErrorHandlingService,
     private fb: FormBuilder,
     private notify: NotifyService) {
@@ -159,21 +165,17 @@ export class BillComponent implements OnInit {
     Object.assign(data, { UId: this.user.getUId() }, { No: this.user.getMemberNo() });
     this.http.postMethod('Bill/getExistBillData', data).subscribe((res: any) => {
       if (res.result != "Data Not Exist") {
-        this.getData();
-        console.log("Data found", res.result);
-        let { advance, bank, supply, balance } = res.result
-        this.int_advance?.patchValue(advance);
-        this.int_advance?.disable();
-        this.int_bank?.patchValue(bank);
-        this.int_bank?.disable();
-        this.int_supply?.patchValue(supply);
-        this.int_supply?.disable();
-        this.int_supBalance?.patchValue(balance);
-        this.calculateBill()
+        console.log(res.result);
+        this.bln_billExist = true;
+        this.toolbar = "#toolbar=0&navpanes=0";
+        const rand = Math.random();
+        this.str_path = res.result;
+        this.pdfSrc = res.result + "?v=" + rand + this.toolbar;
+        this.Url = this.sanitizer.bypassSecurityTrustResourceUrl(this.str_path);
       } else {
-        console.log("Data Not found", res.result);
+        this.getSupplyBalance()
         this.getData();
-        this.getSupplyBalance();
+        this.bln_billExist = false;
       }
     },
       (err: any) => {

@@ -1,4 +1,4 @@
-<div>
+<div *ngIf="!bln_billExist">
     <div class="table-responsive">
         <table class="table">
             <thead>
@@ -54,7 +54,7 @@
 
                 <div class="col">
                     <label class="form-label">शि.पशुखाद्य :</label>
-                    <input type="number" [readonly]=true class="form-control inpStyle" formControlName="int_sup "
+                    <input type="number" [readonly]=true class="form-control inpStyle" formControlName="int_supBalance"
                         (keyup)="calculateBill()">
                 </div>
             </div>
@@ -70,7 +70,7 @@
                         <div class="card-header pb-0 text-danger text-center">- एकूण कपात</div>
                         <div class="card-body pt-0 text-center text-danger">{{int_cutting}}रु.</div>
                     </div>
-                </div> 
+                </div>
                 <div class="col">
                     <div class="" style="background-color: transparent;">
                         <div class="card-header pb-0 text-orange text-center">= देय रक्कम</div>
@@ -101,4 +101,17 @@
         </div>
     </div>
 
+</div>
+
+<div *ngIf="bln_billExist">
+    <div class="card">
+        <div class="card-body">
+            <!-- <object [data]="Url" type="application/pdf" width="100%" height="1000px"></object> -->
+            <!-- <embed src="{{URL}}"
+                width="800" height="500"> -->
+            <div>
+                <button type="button" class="btn btn1 btn-primary">Print</button>
+            </div>
+        </div>
+    </div>
 </div>
