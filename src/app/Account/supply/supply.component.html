@@ -1,0 +1,72 @@
+<div class="mt-3">
+    <form [formGroup]="frm_supply">
+        <div class="row my-3">
+            <div class="col-3 mt-1 text-center text-white">तारीख :</div>
+            <div class="col-6">
+                <input type="date" class="form-control inpStyle" formControlName="str_date"
+                    style="padding-right: 5px;padding-left: 5px;" max={{today}}>
+            </div>
+        </div>
+        <div class="row my-3">
+            <div class="col-3 mt-1 text-center text-white">प्रकार :</div>
+            <div class="col-6">
+                <select class="form-select" formControlName="str_type">
+                    <option *ngFor="let data of supplyType" value="{{data.value}}">{{data.name}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-2 text-center text-white">पिशवी:</div>
+            <div class="col-4">
+                <input type="number" class="form-control inpStyle" formControlName="int_bag" (keyup)="calTotalRate()">
+            </div>
+            <div class="col-2 text-center text-white">दर:</div>
+            <div class="col-4">
+                <input type="number" class="form-control inpStyle" formControlName="int_rate" (keyup)="calTotalRate()">
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-3 text-center text-white">एकूण दर:</div>
+            <div class="col-4">
+                <input type="number" class="form-control disabled" formControlName="int_totalRate">
+            </div>
+        </div>
+        <div class="d-flex justify-content-center mt-4">
+            <button class="btn btn-warning text-white" [disabled]="!frm_supply.valid" (click)="onAdd()">Add</button>
+        </div>
+    </form>
+    <div class="table-responsive mt-3 mb-5">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th style="width:50%">     तारीख     </th>
+                    <th>प्रकार</th>
+                    <th>पिशवी</th>    
+                    <th>दर</th>
+                    <th style="width:30%">एकूण दर  </th>
+                    <th>शिल्लक</th>
+                </tr>
+
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of arr_supplyData">
+                    <td class="text-white">{{data.date| date:'d-M-yyyy'}}</td>
+                    <td class="text-white">{{data.supType}}</td>
+                    <td class="text-white">{{data.bag}}</td>
+                    <td class="text-white">{{data.rate}}</td>
+                    <td class="green" *ngIf="data.addAmount>0">
+                        {{data.addAmount}}&nbsp;&nbsp;<i class="bi bi-arrow-down-left-circle-fill"></i>
+                    </td>
+                    <td class="text-danger" *ngIf="data.cutAmount>0">
+                        {{data.cutAmount}}&nbsp;&nbsp;<i class="bi bi-arrow-up-right-circle-fill"></i>
+                    </td>
+                    <td class="text-white">{{data.balance}}</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="d-flex justify-content-center text-white mb-5" *ngIf=!bln_dataExist>
+            DATA NOT FOUND !!
+        </div>
+    </div>
+
+</div>

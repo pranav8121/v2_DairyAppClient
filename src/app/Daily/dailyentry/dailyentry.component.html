@@ -1,0 +1,223 @@
+<div class="container-fluid" style="width: 98%;">
+    <div>
+        <button class="btn btn-warning" (click)="logout()">LogOut</button>
+    </div>
+    <div class="row  text-center py-1 text-white" style="border-radius: 5px; background-color: rgb(255, 188, 106);">
+        <div class="col-6"> <strong>{{currentDate | date:'dd-MM-yyyy'}}</strong></div>
+        <div class="col-6"> <strong>{{(timeMsg=='morning')?'सकाळ':'संध्याकाळ'}}</strong></div>
+    </div>
+    <div *ngIf="arr_todaysData.length==arr_memberData.length" class="alert alert-success text-center mt-2">
+        All Member Done !!
+    </div>
+
+    <div class="row mt-1 text-white">
+        <div class="col text-center ">
+            <div> म्हैस दूध</div>
+            <div style="color:#FFBC6A;"><strong>{{totalBuff}} लि</strong></div>
+        </div>
+        <div class="col text-center">
+            <div> गाय दूध</div>
+            <div style="color:#FFBC6A;"><strong>{{totalCow}} लि</strong></div>
+        </div>
+        <div class="col text-center">
+            <div>सभासद</div>
+            <div style="color:#FFBC6A;"><strong>({{arr_todaysData.length}}/{{arr_memberData.length}})</strong></div>
+        </div>
+
+        <div class="px-2 py-2">
+            <div class="row">
+                <div class="col-3">
+                    <input type="number" autocomplete="off" (keyup)="showMember(search.value)"
+                        class="form-control mt-1  inpStyle" id="search" #search value={{Cnum}} maxlength="2" autofocus>
+                </div>
+                <div class="col-6">
+
+                    <div class=" px-1 py-2  text-center " *ngIf="bln_ifUserExist" style="border-radius: 5px;">
+                        <strong>{{Name}}</strong>
+                    </div>
+                </div>
+
+                <div class="col-3 mr-1" *ngIf="bln_ifUserExist">
+                    <button class="mt-1 btn btn-primary" *ngIf="!bln_details" (click)="Showdetails()">माहिती </button>
+                    <button class="mt-1 btn btn-primary" *ngIf="bln_details" (click)="Hidedetails()">नोंद </button>
+                </div>
+
+                <!-- If user valid -->
+                <div>
+                    <div class="row px-3 py-3" *ngIf=bln_ifUserExist>
+                        <div class=" col mx-5  px-1 py-1" *ngIf="!bln_isCow" class="buff" style="border-radius: 5px;">
+                            <div class=" text-center "> <strong> म्हैस</strong> </div>
+                        </div>
+                        <div class=" col mx-5  px-1 py-1" *ngIf="bln_isCow" class="cow" style="border-radius: 5px;">
+                            <div class=" text-center "> <strong>गाय</strong> </div>
+                        </div>
+                    </div>
+                    <div name="DailyEntryForm" *ngIf=!bln_details>
+
+                        <form [formGroup]="frm_entryForm" *ngIf="bln_ifUserExist" [hidden]="bln_dailyEntryExist">
+                            <div *ngIf="str_isInvalid!=='' && str_isInvalid" class="alert alert-danger"
+                                style="font-size:15px;text-align: center">
+                                {{str_isInvalid }}
+                            </div>
+                            <div class="row">
+                                <label class="col-5 fs-3">दूध (लिटर):</label>
+                                <div class="col-7">
+                                    <input type="number" autocomplete="off" class="form-control inpStyle"
+                                        formControlName="milk" (keyup)=calculateRate()>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <label class="col-5 fs-3"> फॅट:</label>
+                                <div class="col-7">
+                                    <input type="number" autocomplete="off" class="form-control inpStyle"
+                                        formControlName="fat" (keyup)=calculateRate()>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <label class="col-5 fs-3">एस एन एफ:</label>
+                                <div class="col-7">
+                                    <input type="number" autocomplete="off" class="form-control inpStyle"
+                                        formControlName="snf" (keyup)=calculateRate()>
+                                </div>
+                            </div>
+                            <div>
+                                <div>
+                                    <div class="row pt-1 mt-3" [ngClass]="{cow:bln_isCow==true,buff:bln_isCow==false}"
+                                        *ngIf="frm_entryForm.valid  && !bln_isInvalid &&  RateVal>0"
+                                        style="border-radius: 5px;">
+                                        <h4 class="col fs-3">दर/लिटर:&nbsp;<strong
+                                                style="color:#FFBC6A">{{RateVal}}</strong>
+                                        </h4>
+                                        <h4 class="col d-flex justify-content-start fs-3">एकूण दर:&nbsp; <strong
+                                                style="color:#FFBC6A">{{TotalVal}}</strong>
+                                        </h4>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-center">
+                                    <button class="btn btn-warning text-white mt-3 " (click)="onSave()"
+                                        *ngIf="frm_entryForm.valid  && !bln_isInvalid">
+                                        Save
+                                    </button>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;
+
+                                    <button class="btn btn-secondary mt-3 " (click)="onReset()">
+                                        Reset
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+
+                        <div *ngIf="bln_dailyEntryExist && bln_ifUserExist">
+                            <div id="print_section" #print_section>
+                                <div class="d-none d-print-block">
+                                    <div class="px-1 py-1 d-flex justify-content-center">
+                                        <h2 class="text-primary">{{dairyName}}</h2>
+                                    </div>
+
+                                    <div class="row px-1 py-1">
+                                        <div class=" col  px-1 py-1" style="border-radius: 5px;">
+                                            <div class=" text-center ">
+                                                <strong><strong>{{Cnum}}</strong>-<strong>{{Name}}</strong> </strong>
+                                            </div>
+                                        </div>
+                                        <div class=" col  px-1 py-1" style="border-radius: 5px;">
+                                            <div class=" text-center "> <strong><strong>दुधाचा
+                                                        प्रकार:</strong>-<strong>{{bln_isCow?"गाय":"म्हैस"}}</strong>
+                                                </strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row  my-2">
+                                    <h4 class="text-primary col-6 ">दूध (लिटर): </h4>
+                                    <h4 class="col d-flex justify-content-start" style="color:rgb(255, 188, 106);">
+                                        {{ExistMilk}}
+                                    </h4>
+                                </div>
+
+                                <div class="row  my-2">
+                                    <h4 class="text-primary col-6">फॅट:</h4>
+                                    <h4 class="col d-flex justify-content-start" style="color:rgb(255, 188, 106);">
+                                        {{ExistFat}}
+                                    </h4>
+                                </div>
+
+                                <div class="row  my-2">
+                                    <h4 class="text-primary col-6">एस एन एफ:</h4>
+                                    <h4 class="col d-flex justify-content-start" style="color:rgb(255, 188, 106);">
+                                        {{ExistSnf}}
+                                    </h4>
+
+                                </div>
+
+                                <div class="row  my-2">
+                                    <h4 class="text-primary col-6">दर/लिटर(रु.):</h4>
+                                    <h4 class="col d-flex justify-content-start" style="color:rgb(255, 188, 106);">
+                                        {{ExistRate}}
+                                    </h4>
+                                </div>
+
+                                <div class="row  my-2">
+                                    <h4 class="text-primary col-6">एकूण दर(रु.):</h4>
+                                    <h4 class="col d-flex justify-content-start" style="color:rgb(255, 188, 106);">
+                                        {{ExistTotalRate}}
+                                    </h4>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-center">
+                                <button class="btn btn-warning text-white" (click)="print()">PRINT</button>
+                            </div>
+                        </div>
+
+                        <div *ngIf="!bln_ifUserExist" class="alert alert-danger mt-5 mx-5"
+                            style="font-size:15px;text-align: center">
+                            *सभासद अस्तित्वात नाही!!
+                        </div>
+
+
+                        <div class="row text-white mt-5" *ngIf="bln_ifUserExist">
+                            <div class="col text-center">
+                                <div> म्हैस दर</div>
+                                <div style="color:#FFBC6A;"><strong>{{t_rateBuff | number}} रु</strong></div>
+                            </div>
+                            <div class="col text-center">
+                                <div> गाय दर</div>
+                                <div style="color:#FFBC6A;"><strong>{{t_rateCow | number}} रु</strong></div>
+                            </div>
+                            <div class="col text-center">
+                                <div>दूध/दर</div>
+                                <div style="color:#FFBC6A;"><strong>({{totalMilk | number}}/{{totalRate | number}})</strong></div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                    <div name="Details" *ngIf="bln_details">
+                        <div class="row mx-1">
+                            <div class="col-3" *ngFor="let temp of btnData">
+                                <button style="width: 80px;" class="btn text-white"
+                                    style="border-radius: 5px; background-color: rgb(255, 188, 106);"
+                                    [disabled]="temp.flag" (click)="onBtn(temp.id)">{{temp.name}}</button>
+                            </div>
+                            <div *ngIf="cur">
+                                <app-bill></app-bill>
+                            </div>
+                            <div *ngIf="las">
+                                <app-bill></app-bill>
+                            </div>
+                            <div *ngIf="adv">
+                                <app-advance></app-advance>
+                            </div>
+                            <div *ngIf="sup">
+                                <app-supply></app-supply>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

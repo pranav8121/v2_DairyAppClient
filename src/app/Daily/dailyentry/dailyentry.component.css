@@ -1,0 +1,26 @@
+.cow {
+    background-color: rgb(144, 253, 144);
+    color: #00305a;
+}
+
+.buff {
+    background-color: rgb(160, 158, 158);
+    color: white;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.inpStyle {
+    font-size: 24px;
+    font-weight: bolder;
+    color: #FFBC6A;
+    background-color: #00305a;
+}
+.form-control:focus {
+    border-color: white !important;
+    box-shadow: 0 0 8px white !important;
+  }

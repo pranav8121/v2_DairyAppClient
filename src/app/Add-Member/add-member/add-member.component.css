@@ -1,0 +1,16 @@
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.inpStyle {
+    font-weight: bolder;
+    color: #FFBC6A;
+    background-color: #00305a;
+}
+
+.form-control:focus {
+    border-color: white !important;
+    box-shadow: 0 0 8px white !important;
+  }

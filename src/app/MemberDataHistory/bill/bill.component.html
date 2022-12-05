@@ -1,0 +1,104 @@
+<div>
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr class="text-white">
+                    <th>तारीख</th>
+                    <th>वेळ</th>
+                    <th>दूध</th>
+                    <th>SNF</th>
+                    <th>फॅट</th>
+                    <th>दर</th>
+                    <th>रक्कम</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="text-white" *ngFor="let data of arr_tableData">
+                    <td *ngIf="!bln_data">No Data Found!!</td>
+                    <td *ngIf="bln_data">{{data.date | date:'d-MM'}}</td>
+                    <td *ngIf="bln_data">{{(data.hour=='morning')?'सकाळ':'संध्या.'}}</td>
+                    <td *ngIf="bln_data">{{data.milk}}</td>
+                    <td *ngIf="bln_data">{{data.snf}}</td>
+                    <td *ngIf="bln_data">{{data.fat}}</td>
+                    <td *ngIf="bln_data">{{data.rate}}</td>
+                    <td *ngIf="bln_data">{{data.t_rate}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="row mt-3">
+        <div class="col">एकूण दूध: <span class=" text-orange">{{TotalMilk}}</span></div>
+        <div class="col">एकूण रक्कम: <span class=" text-orange">{{TotalT_Rate}}</span></div>
+    </div>
+    <hr>
+    <div *ngIf="bln_isLast">
+        <form [formGroup]="frm_bill">
+            <div class="row mt-3">
+                <div class="col">
+                    <label class="form-label">ऍडव्हान्स(रु.) :</label>
+                    <input type="number" class="form-control inpStyle" formControlName="int_advance"
+                        (keyup)="calculateBill()">
+                </div>
+                <div class="col">
+                    <label class="form-label">बँक भरणा (रु.) :</label>
+                    <input type="number" class="form-control inpStyle" formControlName="int_bank"
+                        (keyup)="calculateBill()">
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col">
+                    <label class="form-label">पशुखाद्य(रु.) :</label>
+                    <input type="number" class="form-control inpStyle" formControlName="int_supply"
+                        (keyup)="calculateBill()">
+                </div>
+
+                <div class="col">
+                    <label class="form-label">शि.पशुखाद्य :</label>
+                    <input type="number" [readonly]=true class="form-control inpStyle" formControlName="int_sup "
+                        (keyup)="calculateBill()">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="" style="background-color: transparent;">
+                        <div class="card-header pb-0 text-orange text-center">एकूण रक्कम</div>
+                        <div class="card-body pt-0 text-center">{{TotalT_Rate}}रु.</div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="" style="background-color: transparent;">
+                        <div class="card-header pb-0 text-danger text-center">- एकूण कपात</div>
+                        <div class="card-body pt-0 text-center text-danger">{{int_cutting}}रु.</div>
+                    </div>
+                </div> 
+                <div class="col">
+                    <div class="" style="background-color: transparent;">
+                        <div class="card-header pb-0 text-orange text-center">= देय रक्कम</div>
+                        <div class="card-body pt-0 text-center">{{TotalT_Rate-int_cutting | number}}रु.</div>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-center">
+                <button class="btn btn-warning" (click)="onBillSave()">Save</button>
+            </div>
+        </form>
+
+        <hr>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-6 d-flex justify-content-center">
+            <div class="" style="background-color: transparent;">
+                <div class="card-header pb-0 text-orange text-center">सकाळ</div>
+                <div class="card-body pt-0 text-center">{{Mor_TotalMilk}}लि./{{Mor_TotalT_Rate}}रु.</div>
+            </div>
+        </div>
+        <div class="col-6 d-flex justify-content-center">
+            <div class="" style="background-color: transparent;">
+                <div class="card-header pb-0 text-orange text-center">संध्याकाळ</div>
+                <div class="card-body pt-0 text-center">{{Eve_TotalMilk}}लि./{{Eve_TotalT_Rate}}रु.</div>
+            </div>
+        </div>
+    </div>
+
+</div>
