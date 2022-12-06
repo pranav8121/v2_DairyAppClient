@@ -15,6 +15,8 @@ import { BillComponent } from './MemberDataHistory/bill/bill.component';
 import { ToastrModule } from 'ngx-toastr';
 import {MatTableModule} from '@angular/material/table';
 
+import { NgxSpinnerModule } from "ngx-spinner";
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -32,6 +34,7 @@ import {MatTableModule} from '@angular/material/table';
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
+    NgxSpinnerModule,
     ToastrModule.forRoot({
       timeOut: 3000,
       positionClass: 'toast-top-right',

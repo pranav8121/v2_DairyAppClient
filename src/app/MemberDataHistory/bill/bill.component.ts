@@ -5,6 +5,8 @@ import { HttpService } from 'src/app/Services/http/http.service';
 import { NotifyService } from 'src/app/Services/Notification/notify.service';
 import { UserService } from 'src/app/Services/users/user.service';
 import { DomSanitizer } from '@angular/platform-browser';
+import { NgxSpinnerService } from 'ngx-spinner';
+
 @Component({
   selector: 'app-bill',
   templateUrl: './bill.component.html',
@@ -50,7 +52,8 @@ export class BillComponent implements OnInit {
     private sanitizer: DomSanitizer,
     private errorHandeling: ErrorHandlingService,
     private fb: FormBuilder,
-    private notify: NotifyService) {
+    private notify: NotifyService,
+    private spinner: NgxSpinnerService) {
     this.frm_bill = this.fb.group({
       int_advance: ['0', Validators.compose([Validators.required])],
       int_bank: ['0', Validators.compose([Validators.required])],
@@ -61,6 +64,7 @@ export class BillComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.spinner.show();
     this.getBillIfExist();
   }
   getData() {
@@ -171,16 +175,19 @@ export class BillComponent implements OnInit {
         const rand = Math.random();
         this.str_path = res.result;
         this.pdfSrc = res.result + "?v=" + rand + this.toolbar;
-        this.Url = this.sanitizer.bypassSecurityTrustResourceUrl(this.str_path);
+        this.Url = this.sanitizer.bypassSecurityTrustResourceUrl(this.pdfSrc);
+        this.spinner.hide();
       } else {
-        this.getSupplyBalance()
+        this.getSupplyBalance();
         this.getData();
         this.bln_billExist = false;
+        this.spinner.hide();
       }
     },
       (err: any) => {
         console.log(err);
         this.errorHandeling.checkError(err);
+        this.spinner.hide();
       })
   }
 }
