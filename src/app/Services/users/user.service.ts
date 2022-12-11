@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { BehaviorSubject } from 'rxjs';
 import swal from 'sweetalert2';
 import { HttpService } from '../http/http.service';
 import { WebsocketserviceService } from '../Socketio/websocketservice.service';
@@ -8,9 +9,11 @@ import { WebsocketserviceService } from '../Socketio/websocketservice.service';
   providedIn: 'root'
 })
 export class UserService {
-memberNo:any;
-memberName:any;
-billDetails:any;
+  memberNo: any;
+  memberName: any;
+  billDetails: any;
+  // For Navbar
+  navbaropen = new BehaviorSubject(false);
   constructor(private router: Router, private webservice: WebsocketserviceService, private http: HttpService) { };
   clearUserDetails() {
     sessionStorage.removeItem("isUserLoggedIn");
@@ -91,7 +94,7 @@ billDetails:any;
   getMemberNo() {
     return this.memberNo;
   };
-  
+
   getMemberName() {
     return this.memberName;
   };
@@ -100,15 +103,15 @@ billDetails:any;
     return this.billDetails;
   };
 
-  setMemberName(val:any) {
-    this.memberName=val;
+  setMemberName(val: any) {
+    this.memberName = val;
   };
 
-  setMemberNo(val:any) {
-    this.memberNo=val;
+  setMemberNo(val: any) {
+    this.memberNo = val;
   };
 
-  setBillDetails(val:any) {
-   this.billDetails=val;
+  setBillDetails(val: any) {
+    this.billDetails = val;
   };
 }

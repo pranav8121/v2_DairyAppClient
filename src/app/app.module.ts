@@ -13,9 +13,12 @@ import { AdvanceComponent } from './Account/advance/advance.component';
 import { SupplyComponent } from './Account/supply/supply.component';
 import { BillComponent } from './MemberDataHistory/bill/bill.component';
 import { ToastrModule } from 'ngx-toastr';
-import {MatTableModule} from '@angular/material/table';
+import { MatTableModule } from '@angular/material/table';
 
 import { NgxSpinnerModule } from "ngx-spinner";
+import { PdfViewerModule } from 'ng2-pdf-viewer';
+import { NgxPaginationModule } from 'ngx-pagination';
+import { NavbarComponent } from './navbar/navbar.component';
 
 @NgModule({
   declarations: [
@@ -26,6 +29,7 @@ import { NgxSpinnerModule } from "ngx-spinner";
     AdvanceComponent,
     SupplyComponent,
     BillComponent,
+    NavbarComponent,
   ],
   imports: [
     BrowserModule,
@@ -38,9 +42,11 @@ import { NgxSpinnerModule } from "ngx-spinner";
     ToastrModule.forRoot({
       timeOut: 3000,
       positionClass: 'toast-top-right',
-      preventDuplicates:true
+      preventDuplicates: true
     }),
     MatTableModule,
+    PdfViewerModule,
+    NgxPaginationModule
   ],
   providers: [],
   bootstrap: [AppComponent],

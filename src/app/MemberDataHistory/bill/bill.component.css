@@ -4,6 +4,15 @@ th {
     padding-right: 20px; */
 }
 
+.ng2-pdf-viewer-container {
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+  }
+
 .inpStyle {
     font-size: 24px;
     font-weight: bolder;
@@ -19,3 +28,8 @@ th {
 input:read-only {
     background-color: #526779;
 }
+.ng2-pdf-viewer-container {
+    overflow: hidden;
+    position: absolute;
+   width: 100px;
+  }

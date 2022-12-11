@@ -13,7 +13,8 @@ import swal from 'sweetalert2';
   styleUrls: ['./dailyentry.component.css']
 })
 export class DailyentryComponent implements OnInit {
-  currentDate: any = new Date();;
+  currentDate: any = new Date(); navbaropen: any;
+  ;
   timeMsg: any = "";
   totalBuff: any = 99;
   totalCow: any = 99;
@@ -70,7 +71,9 @@ export class DailyentryComponent implements OnInit {
     private user: UserService,
     private errorHandling: ErrorHandlingService,
     private chart: ChartService) {
-
+    this.user.navbaropen.subscribe(res => {
+      this.navbaropen = res;
+    })
   }
 
   ngOnInit(): void {
@@ -200,13 +203,13 @@ export class DailyentryComponent implements OnInit {
 
   Showdetails() {
     this.bln_details = true;
-    this.onBtn("las")
+    this.onBtn("cur")
   };
 
   Hidedetails() {
     this.bln_details = false;
   };
-  
+
   onBtn(id: any) {
     this.las = false;
     this.adv = false;
@@ -284,7 +287,7 @@ export class DailyentryComponent implements OnInit {
       cancelButtonText: "Cancel"
     }).then((result: any) => {
       if (result.isConfirmed) {
-        console.log('logout()',result.isConfirmed);
+        console.log('logout()', result.isConfirmed);
         this.user.UserLogout();
       }
     },
@@ -341,5 +344,12 @@ export class DailyentryComponent implements OnInit {
     } else {
       this.timeMsg = "evening";
     }
+  }
+
+  CloseNavbar() {
+    if (this.navbaropen) {
+      this.user.navbaropen.next(!this.navbaropen)
+    }
+
   }
 }

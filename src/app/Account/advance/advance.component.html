@@ -1,3 +1,4 @@
+<ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="orange" type="ball-spin-clockwise"></ngx-spinner>
 <div>
     <form [formGroup]="frm_Advance">
         <div class="row mt-4 d-flex justify-content-center">
@@ -7,7 +8,8 @@
             </div>
         </div>
         <div class="d-flex justify-content-center mt-4">
-            <button class="btn btn-warning text-white" [disabled]="!frm_Advance.valid" (click)="onSave('1')">Add</button>
+            <button class="btn btn-warning text-white" [disabled]="!frm_Advance.valid"
+                (click)="onSave('1')">Add</button>
             &nbsp;&nbsp;
             <button class="btn btn-danger text-white" [disabled]="!frm_Advance.valid" (click)="onSave('0')">Cut</button>
         </div>
@@ -17,14 +19,14 @@
     </form>
 
     <div class="table-responsive mt-3  mb-5">
-        <table class="table">
+        <table class="table" *ngIf=bln_dataExist>
             <thead>
                 <th>तारीख</th>
                 <th>रक्कम</th>
                 <th>शिल्लक</th>
             </thead>
             <tbody>
-                <tr *ngFor="let data of arr_advData">
+                <tr *ngFor="let data of arr_advData | paginate: { itemsPerPage: 10, currentPage: p }">
                     <td class="text-white">{{data.date| date:'d-M-yyyy'}}</td>
                     <td class="green" *ngIf="data.addAmount>0">
                         {{data.addAmount}}&nbsp;&nbsp;<i class="bi bi-arrow-down-left-circle-fill"></i>
@@ -36,6 +38,9 @@
                 </tr>
             </tbody>
         </table>
+        <div *ngIf=bln_dataExist class="d-flex justify-content-center">
+            <pagination-controls class="my-pagination" (pageChange)="p = $event"></pagination-controls>
+        </div>
         <div class="d-flex justify-content-center text-white mb-5" *ngIf=!bln_dataExist>
             DATA NOT FOUND !!
         </div>

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ErrorHandlingService } from 'src/app/Services/error-handling/error-handling.service';
 import { HttpService } from 'src/app/Services/http/http.service';
@@ -65,7 +65,12 @@ export class BillComponent implements OnInit {
 
   ngOnInit(): void {
     this.spinner.show();
-    this.getBillIfExist();
+    if (this.user.getBillDetails() == "current") {
+      this.getSupplyBalance();
+      this.getData();
+    } else {
+      this.getBillIfExist();
+    }
   }
   getData() {
     let data = {};
@@ -75,6 +80,7 @@ export class BillComponent implements OnInit {
     this.http.postMethod('DailyData/getDataForBill', data).subscribe((res: any) => {
       if (res.result == "No data") {
         this.bln_data = false;
+        this.spinner.hide();
       }
       else if (res.result == "Data") {
         this.bln_data = true;
@@ -88,10 +94,12 @@ export class BillComponent implements OnInit {
           this.arr_tableData.push(ele)
         });
         this.dataSource = this.arr_tableData;
+        this.spinner.hide();
       }
     }, (err: any) => {
       console.log(err);
       this.errorHandeling.checkError(err);
+      this.spinner.hide();
     });
   }
 
@@ -114,22 +122,29 @@ export class BillComponent implements OnInit {
       mor_totalMilk: this.Mor_TotalMilk,
       mor_totalRate: this.Mor_TotalT_Rate,
     }
+    this.spinner.show();
     this.http.postMethod('Bill/postBill', data).subscribe(
       (res: any) => {
+        console.log(res);
+
         this.notify.hideWarningToast()
         if (res.result == 'Data Added Successfully') {
           this.notify.showSuccessWithTimeout("Data Saved Sucessfully", "");
+          this.getBillIfExist();
         } else if (res.result == 'Data Already Exist') {
           this.notify.showWarningWithTimeout("Data Already Exist !!", "");
+          this.spinner.hide();
         } else {
           this.notify.hideWarningToast();
           this.notify.showErrorWithTimeout("Error Saving Data", "");
+          this.spinner.hide();
           setTimeout(() => {
             this.notify.hideErrorToast();
           }, 4000);
         }
       },
       (err: any) => {
+        this.spinner.hide();
         console.log(err);
         this.errorHandeling.checkError(err);
         setTimeout(() => {
@@ -167,15 +182,18 @@ export class BillComponent implements OnInit {
     let data = {};
     this.bln_isLast = this.user.getBillDetails() == 'last'
     Object.assign(data, { UId: this.user.getUId() }, { No: this.user.getMemberNo() });
+    this.spinner.show();
     this.http.postMethod('Bill/getExistBillData', data).subscribe((res: any) => {
       if (res.result != "Data Not Exist") {
         console.log(res.result);
         this.bln_billExist = true;
         this.toolbar = "#toolbar=0&navpanes=0";
         const rand = Math.random();
-        this.str_path = res.result;
+        this.str_path = this.http.APIHost + res.result + this.toolbar;
+        console.log(this.str_path);
+
         this.pdfSrc = res.result + "?v=" + rand + this.toolbar;
-        this.Url = this.sanitizer.bypassSecurityTrustResourceUrl(this.pdfSrc);
+        this.Url = this.sanitizer.bypassSecurityTrustResourceUrl(this.str_path);
         this.spinner.hide();
       } else {
         this.getSupplyBalance();

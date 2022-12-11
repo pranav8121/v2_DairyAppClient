@@ -4,6 +4,13 @@ input::-webkit-inner-spin-button {
     margin: 0;
 }
 
+.my-pagination ::ng-deep .ngx-pagination .current {
+    background: orange;
+}
+.ngx-pagination{
+    color: #FFBC6A;
+}
+
 .inpStyle {
     font-weight: bolder;
     color: #FFBC6A;
@@ -31,6 +38,7 @@ th {
 td {
     text-align: center;
 }
-.green{
-color: rgb(130, 253, 130);
+
+.green {
+    color: rgb(130, 253, 130);
 }

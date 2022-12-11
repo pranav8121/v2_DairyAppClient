@@ -11,6 +11,7 @@ export class HttpService {
     'Pragma': 'no-cache',
     'Expires': '0'
   });
+  APIHost = "http://192.168.1.152:3001/";
   str_apiLink = 'http://192.168.1.152:3001/API/';
   // str_apiLink = 'http://192.168.31.134:3001/API/';
   constructor(public http: HttpClient) { }
@@ -25,8 +26,7 @@ export class HttpService {
     return this.http.post(this.str_apiLink + link, data, { headers: this.headers });
   }
 
-  putMethod(link: any, data: any)
-  {
+  putMethod(link: any, data: any) {
     return this.http.put(this.str_apiLink + link, data);
   }
 

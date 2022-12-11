@@ -5,6 +5,7 @@ import { ErrorHandlingService } from 'src/app/Services/error-handling/error-hand
 import { HttpService } from 'src/app/Services/http/http.service';
 import { UserService } from 'src/app/Services/users/user.service';
 import swal from 'sweetalert2';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-supply',
@@ -28,7 +29,7 @@ export class SupplyComponent implements OnInit {
   frm_supply: any
   arr_supplyData: any;
   bln_dataExist: any;
-  balance:any=0
+  balance: any = 0
   get int_bag() {
     return this.frm_supply.get("int_bag");
   };
@@ -53,6 +54,7 @@ export class SupplyComponent implements OnInit {
     private http: HttpService,
     private user: UserService,
     private errorHandling: ErrorHandlingService,
+    private spinner: NgxSpinnerService
   ) {
     this.No = this.user.getMemberNo();
     this.Name = this.user.getMemberName();
@@ -60,7 +62,7 @@ export class SupplyComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log();
+    this.spinner.show();
     this.frm_supply = new FormGroup({
       'str_date': new FormControl(this.today, [Validators.required]),
       'str_type': new FormControl('sugrass', [Validators.required]),
@@ -104,8 +106,9 @@ export class SupplyComponent implements OnInit {
       confirmButtonText: "Confirm",
       cancelButtonText: "Cancel"
     }).then((result: any) => {
+      this.spinner.show();
       this.http.postMethod('Account/postSupply', data).subscribe((res: any) => {
-        if (res.result=="Data Added Successfully") {
+        if (res.result == "Data Added Successfully") {
           swal.fire({
             title: `Data Added Successfully`,
             text: '',
@@ -118,6 +121,7 @@ export class SupplyComponent implements OnInit {
         }
         console.log(res);
       }, err => {
+        this.spinner.hide();
         console.log(err);
         this.errorHandling.checkError(err);
       });
@@ -131,6 +135,7 @@ export class SupplyComponent implements OnInit {
       No: this.No,
       UId: this.UId
     };
+    this.spinner.show();
     this.http.postMethod('Account/getAccount', data).subscribe((res: any) => {
       this.arr_supplyData = []
       if (res.result != "No data found") {
@@ -138,16 +143,16 @@ export class SupplyComponent implements OnInit {
         this.balance = res.balance
         res.result.forEach((ele: any) => {
           this.arr_supplyData.push(ele)
-        });
+        });;
+        this.spinner.hide();
       } else {
-        this.bln_dataExist = false
+        this.bln_dataExist = false;
+        this.spinner.hide();
       }
-
-
-
     }, err => {
       console.log(err);
-      this.errorHandling.checkError(err)
+      this.errorHandling.checkError(err);
+      this.spinner.hide();
     })
   }
 }

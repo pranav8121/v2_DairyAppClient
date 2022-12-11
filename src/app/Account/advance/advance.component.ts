@@ -5,6 +5,7 @@ import { HttpService } from 'src/app/Services/http/http.service';
 import { NotifyService } from 'src/app/Services/Notification/notify.service';
 import { UserService } from 'src/app/Services/users/user.service';
 import swal from 'sweetalert2';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-advance',
@@ -13,9 +14,10 @@ import swal from 'sweetalert2';
 })
 export class AdvanceComponent implements OnInit {
   No: any;
+  p: any = 1;
   Name: any;
   UId: any;
-  bln_dataExist:any
+  bln_dataExist: any
   frm_Advance: any = new FormGroup({
     'Amount': new FormControl(null, [Validators.required]),
   });
@@ -24,13 +26,15 @@ export class AdvanceComponent implements OnInit {
   constructor(private notify: NotifyService,
     private http: HttpService,
     private user: UserService,
-    private errorHandling: ErrorHandlingService,) {
+    private errorHandling: ErrorHandlingService,
+    private spinner: NgxSpinnerService) {
     this.No = this.user.getMemberNo();
     this.Name = this.user.getMemberName();
     this.UId = this.user.getUId();
   }
 
   ngOnInit(): void {
+    this.spinner.show();
     this.getData();
   }
   onSave(act: any) {
@@ -69,6 +73,7 @@ export class AdvanceComponent implements OnInit {
       cancelButtonText: "Cancel"
     }).then((result: any) => {
       if (result.isConfirmed) {
+        this.spinner.show();
         this.http.postMethod('Account/postAdvance', data).subscribe((res: any) => {
           if (res.result == 'Data Added Successfully') {
             swal.fire({
@@ -84,8 +89,10 @@ export class AdvanceComponent implements OnInit {
               text: '',
               icon: 'warning'
             });
+            this.spinner.hide();
           }
         }, (err: any) => {
+          this.spinner.hide();
           console.log(err);
           this.errorHandling.checkError(err);
         });
@@ -100,20 +107,25 @@ export class AdvanceComponent implements OnInit {
       No: this.No,
       UId: this.UId
     };
+    this.spinner.show();
     this.http.postMethod('Account/getAccount', data).subscribe((res: any) => {
       // console.log(res.result);
       if (res.result != "No data found") {
         this.balance = res.balance
         this.arr_advData = [];
-        this.bln_dataExist = true
-        res.result.forEach((ele: any) => {
-          this.arr_advData.push(ele)
+        this.bln_dataExist = true;
+        let tableData = (res.result).reverse()
+        tableData.forEach((ele: any) => {
+          this.arr_advData.push(ele);
+          this.spinner.hide();
         });
-      }else {
+      } else {
         this.bln_dataExist = false
+        this.spinner.hide();
       }
     }, err => {
       console.log(err);
+      this.spinner.hide();
       this.errorHandling.checkError(err)
     })
   }

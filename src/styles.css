@@ -22,7 +22,27 @@ body {
     background-color: #00305a;
 }
 
+.btn-orange {
+    background-color: orange;
+    color: white;
+}
 
+.btn-outline-orange {
+    border: 1px solid orange;
+    background-color: transparent;
+    color: orange;
+}
+
+.btn-outline-orange {
+    border: 1px solid orange;
+    background-color: transparent;
+    color: orange;
+}
+
+.btn-outline-orange:hover {
+    background-color: orange;
+    color: white;
+  }
 
 .form-control:focus {
     border-color: white !important;

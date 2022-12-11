@@ -1,7 +1,7 @@
-<div class="container-fluid" style="width: 98%;">
-    <div>
-        <button class="btn btn-warning" (click)="logout()">LogOut</button>
-    </div>
+<div class="bg-primary" style="width:100%">
+    <app-navbar></app-navbar>
+</div>
+<div class="container-fluid" (click)="CloseNavbar()">
     <div class="row  text-center py-1 text-white" style="border-radius: 5px; background-color: rgb(255, 188, 106);">
         <div class="col-6"> <strong>{{currentDate | date:'dd-MM-yyyy'}}</strong></div>
         <div class="col-6"> <strong>{{(timeMsg=='morning')?'सकाळ':'संध्याकाळ'}}</strong></div>
@@ -188,7 +188,8 @@
                             </div>
                             <div class="col text-center">
                                 <div>दूध/दर</div>
-                                <div style="color:#FFBC6A;"><strong>({{totalMilk | number}}/{{totalRate | number}})</strong></div>
+                                <div style="color:#FFBC6A;"><strong>({{totalMilk | number}}/{{totalRate |
+                                        number}})</strong></div>
                             </div>
                         </div>
 
